@@ -47,17 +47,19 @@ class Asn1(object):
         return self._codec_uper
         
     def decode(self, rule, infile):
-        if rule == 'xer':
-            self._obj = self.codec_xer.decode(self._pdu, infile)
-        elif rule == 'gser':
-            self._obj = self.codec_gser.decode(self._pdu, infile)
-        elif rule == 'jer':
-            self._obj = self.codec_jer.decode(self._pdu, infile)
+        if os.path.isfile(infile):
+            with open(infile, 'rb') as f:
+                data = f.read()
+                if rule == 'xer':
+                    self._obj = self.codec_xer.decode(self._pdu, data)
+                elif rule == 'gser':
+                    self._obj = self.codec_gser.decode(self._pdu, data)
+                elif rule == 'jer':
+                    self._obj = self.codec_jer.decode(self._pdu, data)
+                elif rule == 'uper':
+                    self._obj = self.codec_uper.decode(self._pdu, data)
         elif rule == 'uper':
-            if os.path.isfile(infile):
-                self._obj = self.codec_uper.decode(self._pdu, infile)
-            else:
-                self._obj = self.codec_uper.decode(self._pdu, bytearray.fromhex(infile))
+            self._obj = self.codec_uper.decode(self._pdu, bytearray.fromhex(infile))
 
     def encode(self, rule, outfile):
         obj = None

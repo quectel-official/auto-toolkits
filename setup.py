@@ -19,7 +19,7 @@ def find_v2xpreconfig_cmd():
 
 setup(
     name='auto-toolkits',
-    version='1.0.0',
+    version='1.0.1',
     license='Apache License 2.0',
     packages=find_packages(),
     package_data={
