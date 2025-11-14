@@ -8,9 +8,12 @@ __version__ = '1.0.0'
 __cmd__ = 'v2xpreconfig'
 
 class Asn1(object):
-    def __init__(self):
+    def __init__(self, version):
         self._cwd = os.path.dirname(os.path.realpath(__file__))
-        self._fname = os.path.join(self._cwd, 'v2x_r14_preconfig.asn')
+        if version == 'r15':
+            self._fname = os.path.join(self._cwd, 'v2x_r15_preconfig.asn')
+        else:
+            self._fname = os.path.join(self._cwd, 'v2x_r14_preconfig.asn')
         self._pdu = 'SL-V2X-Preconfiguration-r14'
         self._obj = None
         self._codec_xer = None
@@ -21,7 +24,7 @@ class Asn1(object):
 
     def set_indent(self, indent):
         self._indent = int(indent)
-    
+
     @property
     def codec_xer(self):
         if self._codec_xer is None:
@@ -45,7 +48,7 @@ class Asn1(object):
         if self._codec_uper is None:
             self._codec_uper = asn1tools.compile_files(self._fname, codec='uper')
         return self._codec_uper
-        
+
     def decode(self, rule, infile):
         if os.path.isfile(infile):
             with open(infile, 'rb') as f:
@@ -79,7 +82,7 @@ class Asn1(object):
                 with open(outfile, 'wb') as f:
                     f.write(obj)
             elif rule == 'uper':
-                print(obj.hex())
+                print(obj.hex().upper())
             else:
                 print(obj.decode())
 
@@ -87,7 +90,6 @@ def create_parser():
     rules = ('uper', 'xer', 'jer', 'gser')
     def_in_rule = rules[0]
     def_out_rule = rules[1]
-
     indent=('0', '2', '4')
     def_indent = indent[1]
 
@@ -104,6 +106,9 @@ def create_parser():
         help='Specifie the amount of indent of the text of output file. Options: {}. default: {}.'.format(', '.join(indent), def_indent),
         choices=indent, default=def_indent
     )
+    p.add_option('--r15', dest='r15', action='store_true', default=False,
+        help='Use SL_V2X_Preconfiguration.asn (R15) instead of default R14.'
+    )
     p.add_option('-v', '--version', dest='version',
         help='Show version information',
         action="store_true", default=False
@@ -117,7 +122,8 @@ def main():
         print('{}: {}'.format(__cmd__, __version__))
         print('asn1tools: {}'.format(asn1tools.version.__version__))
     elif len(args) > 0:
-        asn1 = Asn1()
+        version = 'r15' if options.r15 else 'r14'
+        asn1 = Asn1(version=version)
         if options.indent:
             asn1.set_indent(options.indent)
         asn1.decode(options.in_rule, args[0])

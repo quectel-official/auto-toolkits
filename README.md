@@ -32,6 +32,8 @@ Options:
                         uper, xer, jer, gser. default: xer.
   --indent=INDENT       Specifie the amount of indent of the text of output
                         file. Options: 0, 2, 4. default: 2.
+  --r15                 Use SL_V2X_Preconfiguration.asn (R15) instead of
+                        default R14.
   -v, --version         Show version information
 ```
 
