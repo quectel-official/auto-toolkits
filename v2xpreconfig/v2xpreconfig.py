@@ -107,7 +107,7 @@ def create_parser():
         choices=indent, default=def_indent
     )
     p.add_option('--r15', dest='r15', action='store_true', default=False,
-        help='Use SL_V2X_Preconfiguration.asn (R15) instead of default R14.'
+        help='Use v2x_r15_preconfig.asn (R15) instead of default R14.'
     )
     p.add_option('-v', '--version', dest='version',
         help='Show version information',
